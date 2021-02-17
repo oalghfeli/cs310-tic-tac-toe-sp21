@@ -3,7 +3,7 @@ package edu.jsu.mcis.cs310.tictactoe;
 /**
 * TicTacToeModel implements the Model for the Tic-Tac-Toe game.
 *
-* @author  Your Name
+* @author  obaid
 * @version 1.0
 */
 public class TicTacToeModel {
@@ -45,14 +45,17 @@ public class TicTacToeModel {
         
         this.dimension = dimension;
         xTurn = true;
-        
+
         /* Create board as a 2D TicTacToeSquare array */
-        
         board = new TicTacToeSquare[dimension][dimension];
 
         /* Initialize board (fill with TicTacToeSquare.EMPTY) */
-        
         // INSERT YOUR CODE HERE
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                board[i][j] = TicTacToeSquare.EMPTY;
+            }
+        }
         
     }
     /**
@@ -73,7 +76,23 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
         
-        return false; // this is a stub; you may need to remove it later!
+        if (isValidSquare(row, col)) {
+            if (!isSquareMarked(row, col)) {
+                if (xTurn) {
+                    board[row][col] = TicTacToeSquare.X;
+                } else {
+                    board[row][col] = TicTacToeSquare.O;
+                }
+                xTurn = !xTurn;
+                return true;
+            } else {
+
+                return false;
+            }
+        } else {
+
+            return false;
+        }
         
     }
     
@@ -90,7 +109,12 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
         
-        return false; // this is a stub; you may need to remove it later!
+        if ((row >= getDimension() || col >= getDimension()) || (row < 0 || col < 0)) {
+            return false;
+        } else {
+            return true;
+        }
+
         
     }
     
@@ -106,7 +130,11 @@ public class TicTacToeModel {
                 
         // INSERT YOUR CODE HERE
         
-        return false; // this is a stub; you may need to remove it later!
+        if (board[row][col] != TicTacToeSquare.EMPTY) {
+            return true;
+        } else {
+            return false;
+        }
             
     }
     
@@ -123,7 +151,7 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
         
-        return null; // this is a stub; you should remove it later!
+        return board[row][col];
             
     }
     
@@ -139,7 +167,23 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
         
-        return null; // this is a stub; you should remove it later!
+         if (isTie()) {
+            return TicTacToeState.TIE;
+        } else {
+            if (!xTurn) {
+                if (isMarkWin(TicTacToeSquare.X)) {
+                    return TicTacToeState.X;
+                } else {
+                    return TicTacToeState.NONE;
+                }
+            } else {
+                if (isMarkWin(TicTacToeSquare.O)) {
+                    return TicTacToeState.O;
+                } else {
+                    return TicTacToeState.NONE;
+                }
+            }
+        }
         
     }
     
@@ -155,7 +199,57 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
         
-        return false; // this is a stub; you may need to remove it later!
+         boolean topLeftBottomRight = true;
+        for (int f = 0; f < getDimension(); f++) {
+            if (board[f][f] != mark) {
+                topLeftBottomRight = false;
+            }
+        }
+
+        //Bottom left to top right check
+        boolean bottomLeftTopRight = true;
+        for (int k = 0; k < getDimension(); k++) {
+            if (board[(getDimension() - 1) - k][k] != mark) {
+                bottomLeftTopRight = false;
+            }
+        }
+
+        //Row check
+        boolean rowWon = false;
+        for (int i = 0; i < getDimension(); i++) {
+            boolean winningRow = true;
+
+            for (int j = 0; j < getDimension(); j++) {
+                if (board[j][i] != mark) {
+                    winningRow = false;
+                }
+            }
+            if (winningRow) {
+                rowWon = true;
+            }
+        }
+
+        //Col check
+        boolean colWon = false;
+        for (int g = 0; g < getDimension(); g++) {
+            boolean winningRow = true;
+
+            for (int h = 0; h < getDimension(); h++) {
+                if (board[g][h] != mark) {
+                    winningRow = false;
+                }
+            }
+            if (winningRow) {
+                colWon = true;
+            }
+        }
+
+        if (topLeftBottomRight || bottomLeftTopRight || rowWon || colWon) {
+            return true;
+        } else {
+            return false;
+        }
+
         
     }
     
@@ -169,7 +263,20 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
         
-        return false; // this is a stub; you may need to remove it later!
+         boolean checkEmpty = false;
+        for (int i = 0; i < getDimension(); i++) {
+            for (int j = 0; j < getDimension(); j++) {
+                if (board[i][j] == TicTacToeSquare.EMPTY) {
+                    checkEmpty = true;
+                }
+            }
+        }
+
+        if (checkEmpty) {
+            return false;
+        } else {
+            return true;
+        }
         
     }
 
@@ -226,8 +333,27 @@ public class TicTacToeModel {
         StringBuilder output = new StringBuilder();
         
         // INSERT YOUR CODE HERE
+		int leftSideOfBoardCounter = 0;
+        for (int i = 0; i < getDimension(); i++){
+            if (i == 0) {
+                output.append("  ").append(i);
+            } else {
+                output.append(i);
+            }
+        }
+        output.append("\n\n");
+        for (int j = 0; j < getDimension(); j++){
+            output.append(leftSideOfBoardCounter).append(" ");
+            for (int k = 0; k < getDimension(); k++){
+                output.append(board[j][k]);
+            }
+            output.append("\n");
+            leftSideOfBoardCounter++;
+        }
         
         return output.toString();
+        
+    
         
     }
     
